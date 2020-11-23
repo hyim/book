@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tamingtext</groupId>
   <artifactId>taming-text</artifactId>
@@ -9,8 +9,8 @@
   <url>http://www.tamingtext.com</url>
 
   <properties>
-     <lucene.version>3.6.0</lucene.version>
-     <tika.version>0.10</tika.version>
+     <lucene.version>8.7.0</lucene.version>
+     <tika.version>1.24.1</tika.version>
      <mahout.version>0.6</mahout.version>
      <release.update.interval>daily</release.update.interval>
      <snapshot.update.interval>interval:60</snapshot.update.interval>
@@ -20,8 +20,9 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.7.2</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <argLine>-Xmx1024M</argLine>
           <forkMode>always</forkMode>
@@ -33,11 +34,12 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.8.1</version>
         <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <encoding>utf-8</encoding>
         </configuration>
       </plugin>
@@ -150,30 +152,31 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.6.1</version>
+      <version>2.0.0-alpha1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.6.1</version>
+      <version>2.0.0-alpha1</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
     <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.14.0</version>
     </dependency>
-
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.4</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.11</version>
     </dependency>
 
     <dependency>
       <groupId>commons-cli</groupId>
       <artifactId>commons-cli</artifactId>
-      <version>1.1</version>
+      <version>1.4</version>
     </dependency>
 
     <!-- Solr -->
@@ -363,25 +366,10 @@
       </exclusions>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-common -->
     <dependency>
       <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-analyzers</artifactId>
-      <version>${lucene.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-spellchecker</artifactId>
+      <artifactId>lucene-analyzers-common</artifactId>
       <version>${lucene.version}</version>
       <exclusions>
         <exclusion>
@@ -527,7 +515,7 @@
     <dependency>
       <groupId>org.carrot2</groupId>
       <artifactId>carrot2-core</artifactId>
-      <version>3.6.0</version>
+      <version>4.0.4</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.lucene</groupId>
@@ -548,75 +536,66 @@
     <dependency>
       <groupId>org.apache.opennlp</groupId>
       <artifactId>opennlp-tools</artifactId>
-      <version>1.5.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.opennlp</groupId>
-      <artifactId>opennlp-maxent</artifactId>
-      <version>3.0.3</version>
+      <version>1.9.3</version>
     </dependency>
     <!-- End OpenNLP -->
 
     <dependency>
-      <groupId>postgresql</groupId>
+      <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>8.2-504.jdbc3</version>
+      <version>42.2.18</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.7.0</version>
       <scope>test</scope>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
+      <version>1.2</version>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javax.xml.stream/stax-api -->
     <dependency>
-      <groupId>stax</groupId>
+      <groupId>javax.xml.stream</groupId>
       <artifactId>stax-api</artifactId>
-      <version>1.0.1</version>
+      <version>1.0-2</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty</artifactId>
-      <version>6.1.16</version>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>9.4.34.v20201102</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-util -->
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
+      <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>6.1.16</version>
+      <version>9.4.34.v20201102</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/edu.ucar/netcdf-java -->
     <dependency>
       <groupId>edu.ucar</groupId>
-      <artifactId>netcdf</artifactId>
-      <version>4.2</version>
-      <type>jar</type>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-jdk14</artifactId>
-        </exclusion>
-      </exclusions>
+      <artifactId>netcdf-java</artifactId>
+      <version>5.3.3</version>
     </dependency>
+
   </dependencies>
 
   <repositories>
-    <!--
-    <repository>
-      <id>opennlp</id>
-      <name>OpenNLP Maven Repository</name>
-      <url>http://repo1.maven.org/maven2/</url>
+ <repository>
+      <id>central</id>
+      <name>Maven Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
       <releases>
         <updatePolicy>always</updatePolicy>
         <enabled>true</enabled>
@@ -626,13 +605,24 @@
         <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
-  -->
 
-  <!--
+    <repository>
+      <id>unidata</id>
+      <name>unidata ucar</name>
+      <url>https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/</url>
+      <releases>
+        <updatePolicy>always</updatePolicy>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+    </repository>
     <repository>
       <id>apache.maven2.snapshot.repository</id>
       <name>Apache Maven 2 repository</name>
-      <url>http://people.apache.org/maven-snapshot-repository</url>
+      <url>https://people.apache.org/maven-snapshot-repository</url>
       <releases>
         <updatePolicy>always</updatePolicy>
         <enabled>true</enabled>
@@ -642,8 +632,7 @@
         <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
-  -->
-
+<!--
     <repository>
       <id>tamingtext.maven2.repository</id>
       <name>TamingText Maven 2 repository</name>
@@ -657,6 +646,7 @@
         <updatePolicy>always</updatePolicy>
       </snapshots>
     </repository>
+    -->
 
     <repository>
       <!-- carrot can be found here -->
@@ -672,4 +662,5 @@
     </repository>
 
   </repositories>
+
 </project>
