@@ -22,9 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import opennlp.model.AbstractModel;
+import opennlp.tools.ml.model.AbstractModel;
 import opennlp.tools.namefind.TokenNameFinderModel;
-import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.model.ArtifactSerializer;
 
 /** A variant of {@link opennlp.tools.namefind.TokenNameFinderModel} that will
@@ -37,31 +36,30 @@ import opennlp.tools.util.model.ArtifactSerializer;
  *
  */
 public class PooledTokenNameFinderModel extends TokenNameFinderModel {
-  
-  public PooledTokenNameFinderModel(InputStream in) throws IOException,
-      InvalidFormatException {
-    super(in);
-  }
-  
-  public PooledTokenNameFinderModel(String languageCode,
-      AbstractModel nameFinderModel, Map<String,Object> resources,
-      Map<String,String> manifestInfoEntries) {
-    super(languageCode, nameFinderModel, resources, manifestInfoEntries);
-  }
-  
-  public PooledTokenNameFinderModel(String languageCode,
-      AbstractModel nameFinderModel, byte[] generatorDescriptor,
-      Map<String,Object> resources, Map<String,String> manifestInfoEntries) {
-    super(languageCode, nameFinderModel, generatorDescriptor, resources,
-        manifestInfoEntries);
-  }
 
-  @SuppressWarnings("rawtypes")
-  @Override
-  protected void createArtifactSerializers(
-      Map<String,ArtifactSerializer> serializers) {
-    super.createArtifactSerializers(serializers);
-    
-    PooledGenericModelSerializer.register(serializers);
-  }
+	public PooledTokenNameFinderModel(InputStream in) throws IOException {
+		super(in);
+	}
+
+	public PooledTokenNameFinderModel(String languageCode,
+		AbstractModel nameFinderModel, Map<String, Object> resources,
+		Map<String, String> manifestInfoEntries) {
+		super(languageCode, nameFinderModel, resources, manifestInfoEntries);
+	}
+
+	public PooledTokenNameFinderModel(String languageCode,
+		AbstractModel nameFinderModel, byte[] generatorDescriptor,
+		Map<String, Object> resources, Map<String, String> manifestInfoEntries) {
+		super(languageCode, nameFinderModel, generatorDescriptor, resources,
+			manifestInfoEntries);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	protected void createArtifactSerializers(
+		Map<String, ArtifactSerializer> serializers) {
+		super.createArtifactSerializers(serializers);
+
+		PooledGenericModelSerializer.register(serializers);
+	}
 }

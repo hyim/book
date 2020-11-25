@@ -19,15 +19,13 @@
 
 package com.tamingtext.fuzzy;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.lucene.search.spell.StringDistance;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.CommonsHttpSolrServer;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -35,44 +33,44 @@ import org.apache.solr.common.SolrDocumentList;
 //<start id="did-you-mean.corrector"/>
 public class SpellCorrector {
 
-  private SolrServer solr;
-  private SolrQuery query;
-  private StringDistance sd;
-  private float threshold;
-  
-  public SpellCorrector(StringDistance sd, float threshold) 
-    throws MalformedURLException { 
-    solr = new CommonsHttpSolrServer(
-            new URL("http://localhost:8983/solr"));
-    query = new SolrQuery();
-    query.setFields("word");
-    query.setRows(50); //<co id="co.dym.num"/>
-    this.sd = sd;
-    this.threshold = threshold;
-  }
-  
-  public String topSuggestion(String spelling)
-          throws SolrServerException {
-    query.setQuery("wordNGram:"+spelling); //<co id="co.dym.field"/>
-    QueryResponse response = solr.query(query);
-    SolrDocumentList dl = response.getResults();
-    Iterator<SolrDocument> di = dl.iterator();
-    float maxDistance = 0;
-    String suggestion = null;
-    while (di.hasNext()) {
-      SolrDocument doc = di.next();
-      String word = (String) doc.getFieldValue("word");
-      float distance = sd.getDistance(word, spelling); //<co id="co.dym.edit"/>
-      if (distance > maxDistance) {
-        maxDistance = distance;
-        suggestion = word; //<co id="co.dym.max"/>
-      }
-    }
-    if (maxDistance > threshold) { //<co id="co.dym.threshold"/>
-      return suggestion;
-    }
-    return null;
-  }  
+	private final Http2SolrClient solr;
+	private final SolrQuery query;
+	private final StringDistance sd;
+	private final float threshold;
+
+	public SpellCorrector(StringDistance sd, float threshold) {
+
+		solr = new Http2SolrClient.Builder("http://localhost:8983/solr").build();
+
+		query = new SolrQuery();
+		query.setFields("word");
+		query.setRows(50); //<co id="co.dym.num"/>
+		this.sd = sd;
+		this.threshold = threshold;
+	}
+
+	public String topSuggestion(String spelling)
+		throws SolrServerException, IOException {
+		query.setQuery("wordNGram:" + spelling); //<co id="co.dym.field"/>
+		QueryResponse response = solr.query(query);
+		SolrDocumentList dl = response.getResults();
+		Iterator<SolrDocument> di = dl.iterator();
+		float maxDistance = 0;
+		String suggestion = null;
+		while (di.hasNext()) {
+			SolrDocument doc = di.next();
+			String word = (String)doc.getFieldValue("word");
+			float distance = sd.getDistance(word, spelling); //<co id="co.dym.edit"/>
+			if (distance > maxDistance) {
+				maxDistance = distance;
+				suggestion = word; //<co id="co.dym.max"/>
+			}
+		}
+		if (maxDistance > threshold) { //<co id="co.dym.threshold"/>
+			return suggestion;
+		}
+		return null;
+	}
 }
 /*
 <calloutlist>

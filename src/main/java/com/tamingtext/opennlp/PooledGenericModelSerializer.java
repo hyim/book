@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
-import opennlp.model.AbstractModel;
-import opennlp.model.BinaryFileDataReader;
+import opennlp.tools.ml.model.AbstractModel;
+import opennlp.tools.ml.model.BinaryFileDataReader;
 import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.model.ArtifactSerializer;
 import opennlp.tools.util.model.GenericModelSerializer;

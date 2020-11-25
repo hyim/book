@@ -26,58 +26,59 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
-import opennlp.model.Event;
-import opennlp.model.EventStream;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.cmdline.parser.ParserTool;
+import opennlp.tools.ml.model.Event;
 import opennlp.tools.parser.Parse;
 import opennlp.tools.parser.Parser;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.util.ObjectStream;
 
-public class AnswerTypeEventStream implements EventStream {
+public class AnswerTypeEventStream implements ObjectStream<Event> {
 
-  protected BufferedReader reader;
-  protected String line;
-  protected AnswerTypeContextGenerator atcg;
-  protected Parser parser;
-  
-  public AnswerTypeEventStream(String fileName, String encoding, AnswerTypeContextGenerator atcg,Parser parser) throws IOException {
-    if (encoding == null) {
-      reader = new BufferedReader(new FileReader(fileName));
-    }
-    else {
-      reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName),encoding));
-    }
-    this.atcg = atcg;
-    this.parser = parser;
-  }
-  
-  public AnswerTypeEventStream(String fileName,AnswerTypeContextGenerator atcg,Parser parser) throws IOException {
-    this(fileName,null,atcg,parser);
-  }
-    
-  /**
-   * Creates a new file event stream from the specified file.
-   * @param file the file containing the events.
-   * @throws IOException When the specified file can not be read.
-   */
-  public AnswerTypeEventStream(File file) throws IOException {
-    reader = new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF8"));
-  }
-  
-  public boolean hasNext() {
-    try {
-      return (null != (line = reader.readLine()));
-    }
-    catch (IOException e) {
-      System.err.println(e);
-      return (false);
-    }
-  }
-  
+	protected BufferedReader reader;
+	protected String line;
+	protected AnswerTypeContextGenerator atcg;
+	protected Parser parser;
+
+	public AnswerTypeEventStream(String fileName, String encoding, AnswerTypeContextGenerator atcg,
+		Parser parser) throws IOException {
+		if (encoding == null) {
+			reader = new BufferedReader(new FileReader(fileName));
+		} else {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), encoding));
+		}
+		this.atcg = atcg;
+		this.parser = parser;
+	}
+
+	public AnswerTypeEventStream(String fileName, AnswerTypeContextGenerator atcg, Parser parser) throws IOException {
+		this(fileName, null, atcg, parser);
+	}
+
+	/**
+	 * Creates a new file event stream from the specified file.
+	 * @param file the file containing the events.
+	 * @throws IOException When the specified file can not be read.
+	 */
+	public AnswerTypeEventStream(File file) throws IOException {
+		reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+	}
+
+	private boolean hasNext() {
+		try {
+			return (null != (line = reader.readLine()));
+		} catch (IOException e) {
+			System.err.println(e);
+			return (false);
+		}
+	}
+
+  /*
   public Event next() {
     int split = line.indexOf(' ');
     String outcome = line.substring(0,split);
@@ -85,48 +86,75 @@ public class AnswerTypeEventStream implements EventStream {
     Parse query = ParserTool.parseLine(question,parser,1)[0];
     return (new Event(outcome, atcg.getContext(query)));
   }
-  
-  /**
-   * Generates a string representing the specified event.
-   * @param event The event for which a string representation is needed.
-   * @return A string representing the specified event.
    */
-  public static String toLine(Event event) {
-    StringBuffer sb = new StringBuffer();
-    sb.append(event.getOutcome());
-    String[] context = event.getContext();
-    for (int ci=0,cl=context.length;ci<cl;ci++) {
-      sb.append(" "+context[ci]);
-    }
-    sb.append(System.getProperty("line.separator"));
-    return sb.toString();
-  }
-  
-  public static void main(String[] args) throws IOException {
-    if (args.length == 0) {
-      System.err.println("Usage: AnswerTypeEventStream eventfile");
-      System.exit(1);
-    }
-    int ai=0;
-    String eventFile = args[ai++];
-    String modelsDirProp = System.getProperty("models.dir", "book/src/main" + File.separator + "opennlp-models" +
-        File.separator + "english");
-    File modelsDir = new File(modelsDirProp);   
-    File wordnetDir = new File(System.getProperty("wordnet.dir", "book/src/main" + File.separator + "WordNet-3.0" + File.separator + "dict"));
-    InputStream chunkerStream = new FileInputStream(
-        new File(modelsDir,"en-chunker.bin"));
-    ChunkerModel chunkerModel = new ChunkerModel(chunkerStream);
-    ChunkerME chunker = new ChunkerME(chunkerModel);
-    InputStream posStream = new FileInputStream(
-        new File(modelsDir,"en-pos-maxent.bin"));
-    POSModel posModel = new POSModel(posStream);
-    POSTaggerME tagger =  new POSTaggerME(posModel);
-    Parser parser = new ChunkParser(chunker, tagger);
-    AnswerTypeContextGenerator actg = new AnswerTypeContextGenerator(wordnetDir);
-    EventStream es = new AnswerTypeEventStream(eventFile,actg,parser);
-    while(es.hasNext()) {
-      System.out.println(es.next().toString());
-    }
-  }
+
+	/**
+	 * Generates a string representing the specified event.
+	 * @param event The event for which a string representation is needed.
+	 * @return A string representing the specified event.
+	 */
+	public static String toLine(Event event) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(event.getOutcome());
+		String[] context = event.getContext();
+		for (String s : context) {
+			sb.append(" " + s);
+		}
+		sb.append(System.getProperty("line.separator"));
+		return sb.toString();
+	}
+
+	public static void main(String[] args) throws IOException {
+		if (args.length == 0) {
+			System.err.println("Usage: AnswerTypeEventStream eventfile");
+			System.exit(1);
+		}
+		int ai = 0;
+		String eventFile = args[ai++];
+		String modelsDirProp = System.getProperty("models.dir", "book/src/main" + File.separator + "opennlp-models" +
+			File.separator + "english");
+		File modelsDir = new File(modelsDirProp);
+		File wordnetDir = new File(System.getProperty("wordnet.dir",
+			"book/src/main" + File.separator + "WordNet-3.0" + File.separator + "dict"));
+		InputStream chunkerStream = new FileInputStream(
+			new File(modelsDir, "en-chunker.bin"));
+		ChunkerModel chunkerModel = new ChunkerModel(chunkerStream);
+		ChunkerME chunker = new ChunkerME(chunkerModel);
+		InputStream posStream = new FileInputStream(
+			new File(modelsDir, "en-pos-maxent.bin"));
+		POSModel posModel = new POSModel(posStream);
+		POSTaggerME tagger = new POSTaggerME(posModel);
+		Parser parser = new ChunkParser(chunker, tagger);
+		AnswerTypeContextGenerator actg = new AnswerTypeContextGenerator(wordnetDir);
+		ObjectStream<Event> es = new AnswerTypeEventStream(eventFile, actg, parser);
+		while (true) {
+			Event event = es.read();
+			if (event == null)
+				break;
+			System.out.println(event.toString());
+		}
+	}
+
+	@Override
+	public Event read() throws IOException {
+		if (hasNext()) {
+			int split = line.indexOf(' ');
+			String outcome = line.substring(0, split);
+			String question = line.substring(split + 1);
+			Parse query = ParserTool.parseLine(question, parser, 1)[0];
+			return (new Event(outcome, atcg.getContext(query)));
+		}
+		return null;
+	}
+
+	@Override
+	public void reset() throws IOException, UnsupportedOperationException {
+		reader.reset();
+	}
+
+	@Override
+	public void close() throws IOException {
+		reader.close();
+	}
 }
 

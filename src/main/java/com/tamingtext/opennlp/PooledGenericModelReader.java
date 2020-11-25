@@ -22,14 +22,14 @@ package com.tamingtext.opennlp;
 import java.io.File;
 import java.io.IOException;
 
-import opennlp.maxent.io.GISModelReader;
-import opennlp.model.AbstractModel;
-import opennlp.model.AbstractModelReader;
-import opennlp.model.DataReader;
-import opennlp.model.GenericModelReader;
-import opennlp.perceptron.PerceptronModelReader;
+import opennlp.tools.ml.maxent.io.GISModelReader;
+import opennlp.tools.ml.model.AbstractModel;
+import opennlp.tools.ml.model.AbstractModelReader;
+import opennlp.tools.ml.model.DataReader;
+import opennlp.tools.ml.model.GenericModelReader;
+import opennlp.tools.ml.perceptron.PerceptronModelReader;
 
-/** A subclass of {@link opennlp.model.GenericModelReader} that 
+/** A subclass of {@link opennlp.tools.ml.model.GenericModelReader} that
  *  conserves memory by using delegate readers that call 
  *  <code>intern()</code> on the strings they read from their models.
  *  <p>
@@ -68,7 +68,7 @@ public class PooledGenericModelReader extends GenericModelReader {
     return delegateModelReader.constructModel();
   }
   
-  /** Subclass of {@link opennlp.maxent.io.GISModelReader} that conserves
+  /** Subclass of {@link opennlp.tools.ml.maxent.io.GISModelReader} that conserves
    *  memory by calling <code>intern()</code> on the strings it reads from the
    *  model it loads.
    */
@@ -83,7 +83,7 @@ public class PooledGenericModelReader extends GenericModelReader {
     }
   }
   
-  /** Subclass of {@link opennlp.perceptron.PerceptronModelReader} that conserves
+  /** Subclass of {@link opennlp.tools.ml.perceptron.PerceptronModelReader} that conserves
    *  memory by calling <code>intern()</code> on the strings it reads from the
    *  model it loads.
    */

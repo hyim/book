@@ -27,11 +27,10 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import opennlp.maxent.io.SuffixSensitiveGISModelReader;
-import opennlp.model.MaxentModel;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
 import opennlp.tools.doccat.DoccatModel;
+import opennlp.tools.ml.model.MaxentModel;
 import opennlp.tools.parser.Parser;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
@@ -110,7 +109,7 @@ public class QuestionQParserPlugin extends QParserPlugin {
         tagger =  new POSTaggerME(posModel); //<co id="qqpp.tagger"/>
         model = new DoccatModel(new FileInputStream( //<co id="qqpp.theModel"/>
             new File(modelDirectory,"en-answer.bin")))
-            .getChunkerModel();
+            .getMaxentModel(); // OLD: getChunkerModel();
         probs = new double[model.getNumOutcomes()];
         atcg = new AnswerTypeContextGenerator(
                 new File(wordnetDirectory, "dict"));//<co id="qqpp.context"/>
